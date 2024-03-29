@@ -1,7 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getKoreanLineCount } from "@/utils/koreanUtil";
 import { disassemble, isCompleteAll } from "hangul-js";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -84,9 +87,28 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <input type="text" className="text-black" ref={input1} />
-      <input type="text" className="text-black" ref={input2} />
-      <button onClick={onCalculate}>Calculate</button>
+      <Image
+        src={"/images/name-match.png"}
+        alt={"재미로 보는 이름 궁합테스트"}
+        height={700}
+        width={700}
+      />
+      <h1 className="text-2xl font-bold">재미로 보는 이름 궁합 테스트</h1>
+      <div className="flex gap-10">
+        <Input
+          type="text"
+          className="text-black w-60"
+          ref={input1}
+          placeholder="이름1"
+        />
+        <Input
+          type="text"
+          className="text-black w-60"
+          ref={input2}
+          placeholder="이름2"
+        />
+      </div>
+      <Button onClick={onCalculate}>결과 보기</Button>
     </main>
   );
 }
