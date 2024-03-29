@@ -32,6 +32,8 @@ export default function Home() {
   const [open, setOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
 
+  const [showResult, setShowResult] = useState(false);
+
   const onCalculate = () => {
     const name1Value = input1.current?.value;
     const name2Value = input2.current?.value;
@@ -78,6 +80,7 @@ export default function Home() {
     const output = loop(realOutput);
     console.log(output);
     setOutput(output);
+    setShowResult(true);
   };
 
   const loop = (counts: number[][]): number[][] => {
@@ -99,31 +102,42 @@ export default function Home() {
     return loop(counts);
   };
 
+  const renderGameScreen = () => {
+    return (
+      <>
+        <Image
+          src={"/images/name-match.png"}
+          alt={"재미로 보는 이름 궁합테스트"}
+          height={700}
+          width={700}
+        />
+        <h1 className="text-2xl font-bold">재미로 보는 이름 궁합 테스트</h1>
+        <div className="flex gap-10">
+          <Input
+            type="text"
+            className="text-black w-60"
+            ref={input1}
+            placeholder="이름1"
+          />
+          <Input
+            type="text"
+            className="text-black w-60"
+            ref={input2}
+            placeholder="이름2"
+          />
+        </div>
+        <Button onClick={onCalculate}>결과 보기</Button>
+      </>
+    );
+  };
+
+  const renderResultScreen = () => {
+    return <>results</>;
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Image
-        src={"/images/name-match.png"}
-        alt={"재미로 보는 이름 궁합테스트"}
-        height={700}
-        width={700}
-      />
-      <h1 className="text-2xl font-bold">재미로 보는 이름 궁합 테스트</h1>
-      <div className="flex gap-10">
-        <Input
-          type="text"
-          className="text-black w-60"
-          ref={input1}
-          placeholder="이름1"
-        />
-        <Input
-          type="text"
-          className="text-black w-60"
-          ref={input2}
-          placeholder="이름2"
-        />
-      </div>
-      <Button onClick={onCalculate}>결과 보기</Button>
-
+      <>{!showResult ? renderGameScreen() : renderResultScreen()}</>
       <AlertDialog open={open}>
         <AlertDialogContent>
           <AlertDialogHeader>
