@@ -1,11 +1,24 @@
 "use client";
 
+import {
+  AlertDialogFooter,
+  AlertDialogHeader,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getKoreanLineCount } from "@/utils/koreanUtil";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { disassemble, isCompleteAll } from "hangul-js";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const input1 = useRef<HTMLInputElement>(null);
@@ -16,27 +29,33 @@ export default function Home() {
 
   const [output, setOutput] = useState<number[][]>([]);
 
+  const [open, setOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+
   const onCalculate = () => {
     const name1Value = input1.current?.value;
     const name2Value = input2.current?.value;
 
     if (!name1Value) {
-      alert("1번 문항의 입력 값이 없습니다!");
+      setModalTitle("1번 문항의 입력 값이 없습니다!");
+      setOpen(true);
       return;
     }
 
     if (!name2Value) {
-      alert("2번 문항의 입력 값이 없습니다!");
+      setModalTitle("2번 문항의 입력 값이 없습니다!");
+      setOpen(true);
       return;
     }
 
     if (
       !isCompleteAll(name1Value) ||
       !isCompleteAll(name2Value) ||
-      (name1Value.length < 1 && name1Value.length > 2) ||
-      (name2Value.length < 1 && name2Value.length > 2)
+      (name1Value.length !== 2 && name1Value.length !== 3) ||
+      (name2Value.length !== 2 && name2Value.length !== 3)
     ) {
-      alert("이름은 한글 2~3글자만 가능합니다.");
+      setModalTitle("이름은 한글 2~3글자만 가능합니다.");
+      setOpen(true);
       return;
     }
 
@@ -51,19 +70,14 @@ export default function Home() {
 
     const realOutput: number[][] = [[]];
 
-    console.log(output1);
-    console.log(output2);
-
     for (let i = 0; i < 3; ++i) {
       realOutput[0].push(output1[i] % 10);
       realOutput[0].push(output2[i] % 10);
     }
 
-    console.log(realOutput);
-
-    const lol = loop(realOutput);
-
-    console.log(lol);
+    const output = loop(realOutput);
+    console.log(output);
+    setOutput(output);
   };
 
   const loop = (counts: number[][]): number[][] => {
@@ -109,6 +123,19 @@ export default function Home() {
         />
       </div>
       <Button onClick={onCalculate}>결과 보기</Button>
+
+      <AlertDialog open={open}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{modalTitle}</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setOpen(false)}>
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </main>
   );
 }
